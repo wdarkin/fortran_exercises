@@ -5,6 +5,8 @@ character(len=m) :: x = 'ctag'
 character(len=n) :: y = 'cctagctagc'
 
 call BRUTEFORCE_METHOD(x, y)
+call MORRISPRATT_METHOD(x, m, y)
+
 contains
 	subroutine BRUTEFORCE_METHOD(x, y)
 	implicit none
@@ -26,41 +28,44 @@ contains
         print *, 'Foi achado em:', count, ' lacos'
 	end subroutine BRUTEFORCE_METHOD
 
-    subroutine MORRISPRATT_METHOD(x, y)
+    subroutine MORRISPRATT_METHOD(x, m, y)
     implicit none
-    character, intent(in) :: x, y
-    integer :: i, j
-    	do while(j=0 < n)
-        i=0
-        	do while(i< -1 .and. x(i) /= y(j))
-            	i=call MP_TABLE(x,i)
+    character(len=m), intent(in) :: x    
+    integer, intent(in) :: m
+    character, intent(in) :: y
+    integer :: i, j, Table(0:m-1)
+    call MP_TABLE(x, m, Table)
+    i=0
+    j=0    
+    	do while(j < n)
+        	do while(i > -1 .and. x(i) /= y(j))
+            	i=Table(i)
             end do
             i=i+1
             j=j+1
             if(i>=m) then
               print *, j-i
-              i=call MP_TABLE(x,i)
+              i=Table(i)
             end if
         end do
-    end subroutine
+    end subroutine MORRISPRATT_METHOD
 
-    subroutine MP_TABLE(x, m, T)
+    subroutine MP_TABLE(x, m, Table)
     implicit none
-    character, intent(in) :: x
+    character(len=m), intent(in) :: x
     integer, intent(in) :: m
-    integer, intent(out) :: T
+    integer, intent(out) :: Table(0:m-1)
     integer :: i, j
     i=0
+    Table(0)=-1
     j=0
-    	do while(i<m)
-        T(0)= -1
-        	do while(j > -1 .and. x(i+1:i+1) /= x(j))
-            	j=T(j)
+    	do while(i < m)
+        	do while(j > -1 .and. x(i) /= x(j))
+            	j=Table(j)
             end do
             i=i+1
             j=j+1
-            T(i)=j
+            Table(i)=j
         end do
-    end subroutine
+    end subroutine MP_TABLE
 end program STRING_COMPARE
-
