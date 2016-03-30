@@ -24,21 +24,22 @@ contains
         		print *, 'Ocorrencia em:', j+1
       		end if
     	end do
-        print *, 'Tentativas:', j
+        print *, 'Tentativas:   ', j
         print *, 'Foi achado em:', count, ' lacos'
 	end subroutine BRUTEFORCE_METHOD
 
     subroutine MORRISPRATT_METHOD(x, m, y)
     implicit none
-    character(len=m), intent(in) :: x    
+    character(len=m), intent(in) :: x
     integer, intent(in) :: m
     character, intent(in) :: y
-    integer :: i, j, Table(0:m-1)
-    call MP_TABLE(x, m, Table)
+    integer :: i, j
+    integer, dimension(0:m-1) :: Table    
     i=0
-    j=0    
+    j=0
+    call MP_TABLE(x, m, Table)
     	do while(j < n)
-        	do while(i > -1 .and. x(i) /= y(j))
+        	do while(i > -1 .and. x(i:i) /= y(j:j))
             	i=Table(i)
             end do
             i=i+1
@@ -54,13 +55,13 @@ contains
     implicit none
     character(len=m), intent(in) :: x
     integer, intent(in) :: m
-    integer, intent(out) :: Table(0:m-1)
+    integer, dimension(0:m-1), intent(out) :: Table
     integer :: i, j
     i=0
     Table(0)=-1
-    j=0
+    j=-1
     	do while(i < m)
-        	do while(j > -1 .and. x(i) /= x(j))
+        	do while(j > -1 .and. x(i:i) /= x(j:j))
             	j=Table(j)
             end do
             i=i+1
