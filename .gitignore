@@ -1,3 +1,4 @@
 BuildLog
 ErrorLog
 *.exe
+*.obj
