@@ -11,14 +11,12 @@ contains
 
 subroutine MP_METHOD(x, m, y, n)
 implicit none
-interface
 !declare
 integer, intent(in) :: m, n
 character(LEN=m), intent(in) :: x
 character(LEN=n), intent(in) :: y
 integer :: i, j
 integer, dimension(0:m-1) :: T
-end interface
 !/declare
 
 call MP_TABLE(x, m, T)

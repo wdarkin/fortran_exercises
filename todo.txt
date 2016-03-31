@@ -1,0 +1,12 @@
+Problems
+
+Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+
+Backtrace for this error:
+#0  0xB75F8C86
+#1  0xB75F7D2E
+#2  0xB7710BC3
+#3  0x80486EE in mp_table.3310 at mp-program.f95:?
+#4  0x80487A4 in mp_method.3318 at mp-program.f95:?
+#5  0x804871E in MAIN__ at mp-program.f95:?
+Segmentation fault (core dumped)
