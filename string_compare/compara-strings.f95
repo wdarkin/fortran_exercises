@@ -1,14 +1,16 @@
 program STRING_COMPARE
 implicit none
-integer, parameter :: m=4, n=10
-character(len=m) :: x = 'ctag'
-character(len=n) :: y = 'cctagctagc'
+integer, parameter :: m=5, n=15
+character(len=m) :: x = 'ATATA'
+character(len=n) :: y = 'CTCATATATAATATA'
 
-call BRUTEFORCE_METHOD(x, y)
-call MORRISPRATT_METHOD(x, m, y)
+call bruteforce_method(x, y)
+call mp_method(x, y, m, n)
+call kmp_method(x, y, m, n)
 
 contains
-	subroutine BRUTEFORCE_METHOD(x, y)
+
+	subroutine bruteforce_method(x, y)
 	implicit none
 	character, intent(in) :: x, y
 	integer :: i, j, count=0
@@ -21,52 +23,116 @@ contains
       		end do
       		if(i>=m) then
             	count = count+1
-        		print *, 'Ocorrencia em:', j+1
+        		print *, 'Ocorrencia na posicao:', j+1
       		end if
     	end do
-        print *, 'Tentativas:   ', j
-        print *, 'Foi achado em:', count, ' lacos'
-	end subroutine BRUTEFORCE_METHOD
+        print *, 'Foi achado em:', count, ' loops', char(10)
+        print *, "=================================="
+	end subroutine bruteforce_method
 
-    subroutine MORRISPRATT_METHOD(x, m, y)
-    implicit none
-    character(len=m), intent(in) :: x
-    integer, intent(in) :: m
-    character, intent(in) :: y
-    integer :: i, j
-    integer, dimension(0:m-1) :: Table    
-    i=0
-    j=0
-    call MP_TABLE(x, m, Table)
-    	do while(j < n)
-        	do while(i > -1 .and. x(i:i) /= y(j:j))
-            	i=Table(i)
-            end do
-            i=i+1
-            j=j+1
-            if(i>=m) then
-              print *, j-i
-              i=Table(i)
-            end if
-        end do
-    end subroutine MORRISPRATT_METHOD
 
-    subroutine MP_TABLE(x, m, Table)
+
+	subroutine mp_method(x, y, m, n)
     implicit none
-    character(len=m), intent(in) :: x
-    integer, intent(in) :: m
-    integer, dimension(0:m-1), intent(out) :: Table
-    integer :: i, j
-    i=0
-    Table(0)=-1
-    j=-1
-    	do while(i < m)
-        	do while(j > -1 .and. x(i:i) /= x(j:j))
-            	j=Table(j)
-            end do
-            i=i+1
-            j=j+1
-            Table(i)=j
+    character, intent(in) :: x, y
+    integer, intent(in) :: m, n
+    integer, dimension(m) :: T
+    integer :: i, j, count
+    call mp_table(x, m, T)
+    print *,  'Morris-Pratt Method:', char(10)
+    	i=0
+        j=0
+        count=0
+
+        do while(j < n)
+          do while(i > 0 .AND. x(i:i) /= y(j:j))
+            i=T(i)
+          end do
+          i=i+1
+          j=j+1
+          if(i>=m) then
+            count = count+1
+            print *, 'Ocorrencia na posicao', j-i+1
+            i=T(i)
+          end if
         end do
-    end subroutine MP_TABLE
+        print *, 'Foi achado em:', count, ' loops', char(10)
+        print *, "=================================="
+    end subroutine mp_method
+
+
+	subroutine mp_table(x, m, T)
+	implicit none
+	integer, intent(in) :: m
+    character, intent(in) :: x
+	integer, dimension(m), intent(out) :: T
+	integer :: i, j
+		i=1
+		T(1)=0
+		j=0
+
+		do while(i < m)
+  			do while(j > 0 .and. x(i:i) /= x(j:j))
+    			j=T(j)
+  			end do
+  			i=i+1
+  			j=j+1
+  			T(i)=j
+		end do
+	end subroutine mp_table
+
+
+
+    subroutine kmp_method(x, y, m, n)
+    implicit none
+    integer, intent(in) :: m, n
+    character, intent(in) :: x, y
+    integer, dimension(m) :: T
+    integer :: i, j, count
+    call kmp_table(x, m, T)
+    print *,  'Knuth-Morris-Pratt Method:', char(10)
+    	i=0
+        j=0
+        count=0
+
+        do while(j < n)
+          do while(i > 0 .AND. x(i:i) /= y(j:j))
+            i=T(i)
+          end do
+          i=i+1
+          j=j+1
+          if(i >= m) then
+            count=count+1
+            print *, 'Ocorrencia na posicao', j-i+1
+            i=T(i)
+          end if
+        end do
+        print *, 'Foi achado em:', count, ' loops', char(10)
+        print *, "=================================="
+    end subroutine kmp_method	
+
+    
+	subroutine kmp_table(x, m, T)
+    implicit none
+    integer, intent(in) :: m
+    character, intent(in) :: x
+    integer, dimension(m), intent(out) :: T
+    integer :: i, j
+    	i=1
+        T(1)=0
+        j=0
+
+        do while(i < m)
+          do while(j > 0 .AND. x(i:i) /= x(j:j))
+            j=T(j)
+          end do
+          i=i+1
+          j=j+1
+          if(i < m .AND. x(i:i) == x(j:j)) then
+            T(i)=T(j)
+          else
+            T(i)=j
+          end if
+        end do
+    end subroutine kmp_table    
 end program STRING_COMPARE
