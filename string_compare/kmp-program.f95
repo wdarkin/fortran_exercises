@@ -1,59 +1,59 @@
-program KMP
+program KMP_ALGORITHM
 implicit none
-integer, parameter :: m=4, n=10
-character(len=m) :: x='abcd'
-character(len=n) :: y='adbabdabcd'
+integer, parameter :: m=5, n=33
+character(len=m) :: x='CTTCC'
+character(len=n) :: y='TCGATGCTCCTAGGCTACTCAACTTCCTTCCAG'
+integer, dimension(m) :: T
 
-call KMP_METHOD(x, m, y, n)
+call kmp_method(x, y, m, n)
 
 contains
-subroutine KMP_METHOD(x, m, y, n)
-implicit none
-integer, intent(in) :: m, n
-character(len=m), intent(in) :: x
-character(len=n), intent(in) :: y
-integer :: i, j
-integer, dimension(0:m-1) :: Table
 
-call KMP_TABLE(x, m, Table)
+	subroutine kmp_method(x, y, m, n)
+    implicit none
+    integer, intent(in) :: m, n
+    character, intent(in) :: x, y
+    integer, dimension(m) :: T
+    integer :: i, j
+    call kmp_table(x, m, T)
+    	i=0
+        j=0
 
-i=0
-j=0
-do while(j < n)
-  do while((i > -1) .AND. (x(i:i) /= y(j:j)))
-    i=Table(i)
-  end while
-  i=i+1
-  j=j+1
-  if(i > m) then
-    print *, j-1
-    i=Table(i)
-  end if
-end while
-end subroutine KMP_METHOD
+        do while(j < n)
+          do while(i > 0 .AND. x(i:i) /= y(j:j))
+            i=T(i)
+          end do
+          i=i+1
+          j=j+1
+          if(i >= m) then
+            print *, j-i+1
+            i=T(i)
+          end if
+        end do    
+    end subroutine kmp_method	
 
-subroutine KMP_TABLE(x, m, Table)
-implicit none
-integer, intent(in) :: m
-character(len=m), intent(in) :: x
-integer :: i, j
-integer, dimension(0:m-1) :: Table
-i=0
-Table(0)=-1
-j=-1
-do while(i < m)
-  do while((j > -1) .AND. (x(i:i) /= x(j:j)))
-    j=Table(j)
-  end while
-  i=i+1
-  j=j+1
 
-  if((i < m) .AND. (x(i:i) == x(j:j))) then
-    Table(i:i)=Table(j:j)
-  else
-    Table(i:i)=j
-  end if
-end while
+	subroutine kmp_table(x, m, T)
+    implicit none
+    integer, intent(in) :: m
+    character, intent(in) :: x
+    integer, dimension(m), intent(out) :: T
+    integer :: i, j
+    	i=1
+        T(1)=0
+        j=0
 
-end subroutine KMP_TABLE
-end program KMP
+        do while(i < m)
+          do while(j > 0 .AND. x(i:i) /= x(j:j))
+            j=T(j)
+          end do
+          i=i+1
+          j=j+1
+          if(i < m .AND. x(i:i) == x(j:j)) then
+            T(i)=T(j)
+          else
+            T(i)=j
+          end if
+        end do
+    end subroutine kmp_table
+end program KMP_ALGORITHM
