@@ -1,8 +1,8 @@
 program mp_algoritmo_professor
 implicit none
-integer, parameter :: m=1, n=18
-character(len=m) :: x='C'
-character(len=n) :: y='TAGATGCTACCTAGTAGG'
+integer, parameter :: m=4, n=20
+character(len=m) :: x='TTCG'
+character(len=n) :: y='ATCTGCTTCCTGCTTCTTCG'
 integer, dimension(0:m-1) :: T
 
 call mp_method(x, y, m, n)
@@ -13,12 +13,14 @@ contains
     integer, intent(in) :: m, n
     character, intent(in) :: x, y
     integer, dimension(0:m) :: T
-    integer :: i, j
+    integer :: i, j, counter
     call mp_table(x, m, T)
     	i=0
         j=0
+        counter=0
         do while(j < n)
           do while(i > -1 .and. x(i+1:i+1) /= y(j+1:j+1))
+            counter=counter+1
             i=T(i)
           end do
           i=i+1
@@ -28,6 +30,7 @@ contains
             i=T(i)
           end if
         end do
+        print *, counter
     end subroutine mp_method
 
 	subroutine mp_table(x, m, T)
