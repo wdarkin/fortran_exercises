@@ -22,9 +22,9 @@ contains
 	integer :: i, j, counter
 	!busca
     print *, 'BruteForce Method:', char(10)
+    counter=0
     	do j=0, n-m
       	i=0
-        counter=0
       		do while(i<m .and. x(i+1:i+1) == y(i+j+1:i+j+1))
             	counter=counter+1
         		i = i+1
